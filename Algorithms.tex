@@ -1,0 +1,116 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{textalpha}
+\usepackage{amsmath}
+
+\usepackage{caption}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+\title{1\textsuperscript{η} Εργασία Στο Μάθημα Αλγόριθμοι}
+
+\author{Ονοματεπώνυμο: Βίκτωρ Κυρτσούδης \\ ΑΕΜ: 4143}
+\date{}
+
+\begin{document}
+\maketitle
+\begin{flushleft}
+
+    \section*{Άσκηση 1}
+    $\sqrt{\log_9{n}}, \log{\sqrt{n}}, 2^{\frac{\log{n}}{2}}, 8^{\log{n}}, \log{(4^n)}, \log{(n^n)}, (\log{(2^n)})^2, n^{\log{n}}, 2^n, 2^{n\log{n}}, n!$
+
+    \newpage
+    \section*{Άσκηση 2}
+    
+    \begin{algorithm}
+        \caption*{Αλγόριθμος εύρεσης του πλήθους ελάχιστων μονοπατιών από τον κόμβο $s$ στον κόμβο $t$ σε έναν γράφο $G=(V, E)$}
+
+        \begin{algorithmic}[1]
+        \STATE \textbf{getAmountOfShortestPaths($G, s, t$):}
+        \newline
+        \STATE Θέτω $PathsTo[s] \gets 1$
+        \FOR {κάθε κόμβο $v \in V - \{s\}$}
+            \STATE Θέτω $PathsTo[v] \gets 0$
+        \ENDFOR
+
+        \STATE Θέτω $LevelOf[s] \gets 0$
+        \FOR {κάθε κόμβο $v \in V - \{s\}$}
+        \STATE Θέτω $LevelOf[v] \gets -1$
+        \ENDFOR
+        
+        \STATE Εισάγω στην Layer[0] τον κόμβο $s$
+        \STATE Θέτω τον layer counter $i \gets 0$
+        \STATE Θέτω τον paths counter $cnt \gets 0$
+
+        \WHILE{η Layer[i] δεν είναι κενή ΚΑΙ $cnt == 0$} 
+            \STATE Αρχικοποιώ την Layer[i+1] ως κενή
+            \FOR {κάθε κόμβο $u \in Layer[i]$}
+                \FOR {κάθε κόμβο v για τον οποίο υπάρχει ακμή $(u, v)$}
+                    \IF {$LevelOf[v] == -1$}
+                        \STATE Θέτω $LevelOf[v] \gets i+1$
+                        \STATE Εισάγω τον κόμβο $v$ στην Layer[i+1]
+                    \ENDIF
+                    \IF {$LevelOf[v] > LevelOf[u]$}
+                        \STATE Θέτω $PathsTo[v] \gets PathsTo[u]+PathsTo[v]$
+                    \ENDIF  
+                    \IF {$v == t$}
+                        \STATE Θέτω $cnt \gets cnt  + PathsTo[u]$
+                    \ENDIF
+                \ENDFOR
+            \ENDFOR
+            \STATE Θέτω $i \gets i + 1$
+        \ENDWHILE
+        \RETURN $cnt$
+        \end{algorithmic}
+    \end{algorithm}
+
+    Ο αλγόριθμος βασίζεται στον BFS ο οποίος έχει χρονική πολυπλοκότητα $O(|V| + |E|)$, αλλά όλα τα ελάχιστα μονοπάτια θα εμφανιστούν στο ίδιο Layer οπότε όταν βρω πρώτη φορά το t θα είναι το τελευταίο Layer που εξετάζω και το πλήθος των ελάχιστων μονοπατιών στο t θα είναι ίσο με το άθροισμα των ελάχιστων μονοπατιών των κόμβων του προηγούμενου Layer που συνδέονται με το t.
+
+    \newpage
+    \section*{Άσκηση 3}
+    \begin{enumerate}
+        \item Το συγκεκριμένο πρόβλημα μπορεί να μοντελοποιηθεί με ένα κατευθυνόμενο γράφημα όπου οι κόμβοι είναι όλες οι πιθανές καταστάσεις των τριών δοχείων, δηλαδή η ποσότητα νερού που περιέχουν. Κάθε ακμή ξεκινάει από έναν κόμβο u και καταλήγει σε έναν κόμβο v αν και μόνο αν η κατάσταση του κόμβου v προκύπτει από την κατάσταση του κόμβου u με την εφαρμογή μιας επιτρεπτής εκροής.\newline
+        Ξεκινώντας από την κατάσταση (a=0,b=7,c=4) πρέπει να καταλήξουμε σε οποιαδήποτε κατάσταση με b=2 ή/και c=2
+        \item Μπορούμε να χρησιμοποιήσούμε είτε τον DFS είτε τον BFS αλγόριθμο αλλά με τον BFS θα βρούμε την επίλυση με τις λιγότερες απαιτούμενες ενέργειες.
+    \end{enumerate}
+
+    \newpage
+    \section*{Άσκηση 4}
+    \begin{enumerate}
+        \item Σε κάθε κλήση της συνάρτησης εκτυπώνονται n αριθμοί και ξανακαλείται η συνάρτηση 2 φορές για $\lfloor n/2 \rfloor$ αριθμούς. Άρα η αναδρομική σχέση είναι: 
+
+        \begin{equation*}
+            T(n) = 
+            \begin{cases}
+            0 & \text{if } n = 0 \\
+            2T(\lfloor n/2 \rfloor) + n & \text{if } n \geq 1
+            \end{cases}
+        \end{equation*}
+        και απο Master Theorem με $a=2, b=2, c=1$ έχουμε ότι $T(n) = \Theta(n\log_2{n})$ αριθμοί εκτυπώνονται.
+        \item Ο αριθμός 1 εμφανίζεται μία φορά σε κάθε κλήση της συνάρτησης άρα η αναδρομική σχέση γίνεται:
+        
+        \begin{equation*}
+            T(n) = 
+            \begin{cases}
+            0 & \text{if } n = 0 \\
+            2T(\lfloor n/2 \rfloor) + 1 & \text{if } n \geq 1
+            \end{cases}
+        \end{equation*}
+        και απο Master Theorem με $a=2, b=2, c=0$ έχουμε ότι $T(n) = \Theta(n^{\log_2{2}}) = \Theta(n)$ φορές εκτυπώνεται το 1.
+    \end{enumerate}
+
+    \newpage
+    \section*{Άσκηση 5}
+    \begin{enumerate}
+        \item Εφόσων το x είναι πλειοψηφικό στοιχείο του Α ισχύει ότι
+        \begin{equation}
+            \text{πλήθος } x > n/2
+        \end{equation}
+        Άρα υπάρχει τουλάχιστον ένα ζεύγος με δύο φορές το στοιχείο x που στον πίνακα Β περνάει μόνο το ένα \textbf{(2)}.
+        Έστω ότι σε όλα τα άλλα ζεύγη του πίνακα υπάρχει τουλάχιστον μία φορά το x (λόγω του (1)) και ας πούμε αυτή την μορφή του πίνακα: Μ. Αυτό σημαίνει ότι ο Β θα πάρει ένα x από το ζευγάρι με τα δύο x και απ' όλα τα άλλα ζευγάρια θα πάρει ή ένα x αν και τα δύο στοιχεία είναι x ή τίποτα αν το δεύτερο στοιχείο είναι διαφορετικό από x. Άρα ο Β θα πάρει μόνο x και άρα το x θα είναι πλειοψηφικό στοιχείο και στον Β.
+
+        Ξεκινώντας από έναν πίνακα Μ αν πάρουμε οποιαδήποτε ζεύγη [x,y] και [x,z] με y,z οποιαδήποτε στοιχεία του Α και αντιμεταθέσουμε το y απ' το πρώτο και το x απ' το δεύτερο, τότε αντί να περάσει στον Β το πολύ ένα x για κάθε ζεύγος θα περάσει ένα y για το δεύτερο, αν $y=z$ και σίγουρα ένα x για το πρώτο. Οπότε τα y που θα περάσουν στον B λόγω των αντιμεταθέσεων θα είναι το πολύ ίσα με τα αντίστοιχα x αλλά λόγω (2) τα x θα είναι περισσότερα.
+    \end{enumerate}
+\end{flushleft}
+\end{document}
